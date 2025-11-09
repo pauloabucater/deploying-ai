@@ -1,0 +1,1 @@
+Add a readme.md where you explain the nature of your chat client, the serivices that it provides, and any decisions that you made related to the implementation.
