@@ -1,7 +1,3 @@
-import  sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from assignment_chat.main import get_music_chat_agent
 from langchain_core.messages import HumanMessage, AIMessage
 import gradio as gr
