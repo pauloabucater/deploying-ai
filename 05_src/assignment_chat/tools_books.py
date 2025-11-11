@@ -2,7 +2,6 @@ from langchain.tools import tool
 import chromadb
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 from pydantic import BaseModel, Field
-# import sqlalchemy as sa
 import pandas as pd
 from dotenv import load_dotenv
 from utils.logger import get_logger
@@ -11,8 +10,6 @@ _logs = get_logger(__name__)
 load_dotenv(".env")
 load_dotenv(".secrets")
 
-# vector_db_client_url="http://localhost:8000"
-# chroma = chromadb.HttpClient(host=vector_db_client_url)
 chroma_folder = "assignment_chat/data/chromadb"
 chroma = chromadb.PersistentClient(path=chroma_folder)
 
@@ -23,7 +20,7 @@ collection = chroma.get_collection(name=collection_name,
                                        model_name="text-embedding-3-small")
                                    )
 
-# Ratings file: https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews/data/code?select=Books_rating.csv
+# Books file: https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews/data/code?select=Books_rating.csv
 # Path: data/books_data.csv
 # Rec count: 212,404
 # Columns:
@@ -37,22 +34,6 @@ collection = chroma.get_collection(name=collection_name,
     # "infoLink",
     # "categories",
     # "ratingsCount"
-
-
-# Ratings file: https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews/data/code?select=Books_rating.csv
-# Path: data/books_rating.csv
-# Rec count: 3,000,000
-# Columns:
-    # "Id",
-    # "Title",
-    # "Price",
-    # "User_id",
-    # "profileName",
-    # "review_helpfulness",
-    # "review_score",
-    # "review_time",
-    # "review_summary",
-    # "review_text"
 
 
 class BookData(BaseModel):
@@ -84,7 +65,6 @@ def additional_details(title:str):
     _logs.debug(f"*** additional_details - start: title={title}")
     file = "assignment_chat/data/books_data.csv"
     df_books = pd.read_csv(file, encoding='utf-8')
-    # filtered_df = df_books[df_books['Title'].str.contains(title, case=False, na=False)]
     filtered_df = df_books[df_books['Title'] == title]
 
 
@@ -96,7 +76,6 @@ def additional_details(title:str):
             "description": row['description'],
             "publisher": row['publisher']
         }
-        # _logs.debug(f'Found details for book {title}: {details}')
         return details
     else:
         _logs.warning(f'No details found for book: {title}')
@@ -116,7 +95,6 @@ def get_context_data(query:str, collection:chromadb.api.models.Collection, top_n
     context_data = []
     for idx, custom_id in enumerate(results['ids'][0]):
         title = get_title_from_custom_id(custom_id)
-        # _logs.debug(f"*** get_context_data - processing: title={title}")
         details = additional_details(title)
         details['text'] = results['documents'][0][idx]
         context_data.append(details)
