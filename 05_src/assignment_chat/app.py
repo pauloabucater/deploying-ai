@@ -1,4 +1,4 @@
-from assignment_chat.main import get_music_chat_agent
+from assignment_chat.main import get_chat_agent
 from langchain_core.messages import HumanMessage, AIMessage
 import gradio as gr
 from dotenv import load_dotenv
@@ -7,7 +7,7 @@ from utils.logger import get_logger
 
 _logs = get_logger(__name__)
 
-llm = get_music_chat_agent()
+llm = get_chat_agent()
 
 load_dotenv('.secrets')
 
@@ -37,5 +37,5 @@ chat = gr.ChatInterface(
 )
 
 if __name__ == "__main__":
-    _logs.info('Starting Music Chat App...')
+    _logs.info('Starting Books and Music Chat App...')
     chat.launch()
